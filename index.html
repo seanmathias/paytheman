@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>paytheman</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="icon" href="mm_black.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Lexend+Peta:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -420,6 +421,58 @@
             color: var(--text-secondary);
         }
 
+        footer {
+            background: var(--bg-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 0;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: transform 0.2s, opacity 0.2s;
+            padding: 0.25rem;
+        }
+
+        .social-link:hover {
+            transform: translateY(-2px);
+            opacity: 0.8;
+        }
+
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .social-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
         @media (max-width: 768px) {
             body { padding: 10px; }
             header { padding: 1.5rem; }
@@ -434,6 +487,10 @@
             .activities-table tbody tr { display: block; margin-bottom: 1rem; }
             .activities-table tbody td { display: flex; justify-content: space-between; padding: 0.75rem 1rem; border: none !important; }
             .activities-table tbody td:before { content: attr(data-label); font-weight: 600; color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; }
+            footer { padding: 1rem; }
+            .social-links { gap: 1rem; }
+            .social-icon { width: 28px; height: 28px; }
+            .social-label { font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -451,6 +508,7 @@
             </div>
         </header>
 
+        <h2 class="section-header" id="yearStatsHeader">Loading...</h2>
         <div class="stats-grid" id="statsGrid">
             <div class="loading">Loading stats</div>
         </div>
@@ -483,6 +541,47 @@
                 <div class="loading">Loading activities</div>
             </div>
         </div>
+
+        <footer>
+            <div class="social-links">
+                <a href="https://instagram.com/mountain_mudder" target="_blank" rel="noopener noreferrer" class="social-link">
+                    <div class="social-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="20" height="20" rx="5" stroke="url(#instagram-gradient)" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="4" stroke="url(#instagram-gradient)" stroke-width="2"/>
+                            <circle cx="17.5" cy="6.5" r="1.5" fill="url(#instagram-gradient)"/>
+                            <defs>
+                                <linearGradient id="instagram-gradient" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#FD5949"/>
+                                    <stop offset="0.5" stop-color="#D6249F"/>
+                                    <stop offset="1" stop-color="#285AEB"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="social-label">@mountain_mudder</span>
+                </a>
+                
+                <a href="https://www.strava.com/athletes/mountain_mudder" target="_blank" rel="noopener noreferrer" class="social-link">
+                    <div class="social-icon">
+                        <svg viewBox="0 0 24 24" fill="#FC4C02" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
+                        </svg>
+                    </div>
+                    <span class="social-label">Strava</span>
+                </a>
+                
+                <a href="https://www.peakbagger.com/" target="_blank" rel="noopener noreferrer" class="social-link">
+                    <div class="social-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 20L8 8L12 14L16 6L22 20H2Z" stroke="#2d5a3d" stroke-width="2" fill="#4a7c59" stroke-linejoin="round"/>
+                            <circle cx="12" cy="6" r="1.5" fill="#ff6b6b"/>
+                        </svg>
+                    </div>
+                    <span class="social-label">Peakbagger</span>
+                </a>
+            </div>
+        </footer>
     </div>
 
     <!-- Load configuration from external file -->
@@ -739,6 +838,22 @@
                 return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
             }
 
+            static formatStreakInYearsMonthsDays(days) {
+                if (days === 0) return 'No current streak';
+                
+                const years = Math.floor(days / 365);
+                const remainingAfterYears = days % 365;
+                const months = Math.floor(remainingAfterYears / 30);
+                const remainingDays = remainingAfterYears % 30;
+                
+                const parts = [];
+                if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
+                if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
+                if (remainingDays > 0 || parts.length === 0) parts.push(`${remainingDays} day${remainingDays !== 1 ? 's' : ''}`);
+                
+                return parts.join(', ');
+            }
+
             static getDaysWithActivities(activities) {
                 const uniqueDays = new Set();
                 activities.forEach(a => {
@@ -952,7 +1067,7 @@
                         <div class="stat-card-content">
                             <div class="stat-item">
                                 <div class="stat-label">Total Miles</div>
-                                <div class="stat-value">${totalMilesAndElevation.totalMiles.toFixed(1)}<span class="stat-unit">mi</span></div>
+                                <div class="stat-value">${totalMilesAndElevation.totalMiles.toFixed(2)}<span class="stat-unit">mi</span></div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-label">Total Elevation</div>
@@ -982,6 +1097,7 @@
                             <div class="stat-item">
                                 <div class="stat-label">Current Streak</div>
                                 <div class="stat-value">${stats.currentStreak}<span class="stat-unit">days</span></div>
+                                <div class="stat-subtitle">${StatsCalculator.formatStreakInYearsMonthsDays(stats.currentStreak)}</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-label">Longest Streak</div>
@@ -997,7 +1113,7 @@
                     <div class="activity-stat-card walking">
                         <h4>🚶 Walking</h4>
                         <div class="activity-stat-row">
-                            <span class="activity-stat-label">Activities</span>
+                            <span class="activity-stat-label">Walks</span>
                             <span class="activity-stat-value">${activityStats.walking.count}</span>
                         </div>
                         <div class="activity-stat-row">
@@ -1012,7 +1128,7 @@
                     <div class="activity-stat-card running">
                         <h4>🏃 Running</h4>
                         <div class="activity-stat-row">
-                            <span class="activity-stat-label">Activities</span>
+                            <span class="activity-stat-label">Runs</span>
                             <span class="activity-stat-value">${activityStats.running.count}</span>
                         </div>
                         <div class="activity-stat-row">
@@ -1042,7 +1158,7 @@
                     <div class="activity-stat-card mountaineering">
                         <h4>⛰️ Mountaineering</h4>
                         <div class="activity-stat-row">
-                            <span class="activity-stat-label">Activities</span>
+                            <span class="activity-stat-label">Trips</span>
                             <span class="activity-stat-value">${activityStats.mountaineering.count}</span>
                         </div>
                         <div class="activity-stat-row">
@@ -1061,7 +1177,7 @@
                     <div class="activity-stat-card strength">
                         <h4>💪 Strength Training</h4>
                         <div class="activity-stat-row">
-                            <span class="activity-stat-label">Activities</span>
+                            <span class="activity-stat-label">Workouts</span>
                             <span class="activity-stat-value">${activityStats.strength.count}</span>
                         </div>
                     </div>
@@ -1168,6 +1284,9 @@
             const year = new Date().getFullYear();
             state.currentYear = year;
 
+            // Set the year statistics header
+            document.getElementById('yearStatsHeader').textContent = `${year} Statistics`;
+
             try {
                 document.getElementById('lastUpdated').textContent = 'Loading data...';
                 
@@ -1206,7 +1325,7 @@
                 }, 100);
 
                 document.getElementById('lastUpdated').textContent = 
-                    `Last updated: ${new Date().toLocaleTimeString()} ${state.activities.length} activities in ${year}`;
+                    `Last updated: ${new Date().toLocaleTimeString()} • ${state.activities.length} activities in ${year}`;
 
             } catch (error) {
                 console.error('Error loading dashboard:', error);
