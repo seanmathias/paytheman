@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>paytheman</title>
+    <title>MountainMudder</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <link rel="icon" href="mm_black.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Lexend+Peta:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -244,22 +244,128 @@
 
         .activity-stat-card.walking {
             border-top-color: var(--walking);
+            background-image: url('walking.png');
+            background-size: 180px;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 1;
+            position: relative;
+        }
+
+        .activity-stat-card.walking::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 0;
+        }
+
+        .activity-stat-card.walking > * {
+            position: relative;
+            z-index: 1;
         }
 
         .activity-stat-card.running {
             border-top-color: var(--running);
+            background-image: url('running.png');
+            background-size: 180px;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .activity-stat-card.running::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 0;
+        }
+
+        .activity-stat-card.running > * {
+            position: relative;
+            z-index: 1;
         }
 
         .activity-stat-card.stairs {
             border-top-color: var(--stairs);
+            background-image: url('stairs.png');
+            background-size: 180px;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .activity-stat-card.stairs::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 0;
+        }
+
+        .activity-stat-card.stairs > * {
+            position: relative;
+            z-index: 1;
         }
 
         .activity-stat-card.mountaineering {
             border-top-color: var(--hiking);
+            background-image: url('mountains.png');
+            background-size: 180px;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .activity-stat-card.mountaineering::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 0;
+        }
+
+        .activity-stat-card.mountaineering > * {
+            position: relative;
+            z-index: 1;
         }
 
         .activity-stat-card.strength {
             border-top-color: var(--strength);
+            background-image: url('strength.png');
+            background-size: 180px;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .activity-stat-card.strength::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 0;
+        }
+
+        .activity-stat-card.strength > * {
+            position: relative;
+            z-index: 1;
         }
 
         .activity-stat-row {
@@ -502,7 +608,7 @@
                     <img src="mm_black.png" alt="Logo">
                 </div>
                 <div class="header-text">
-                    <h1>paytheman</h1>
+                    <h1>MountainMudder</h1>
                     <div class="subtitle" id="lastUpdated">Loading...</div>
                 </div>
             </div>
@@ -1111,7 +1217,7 @@
             static renderActivityStats(activityStats, peaksFromStats) {
                 document.getElementById('activityStatsGrid').innerHTML = `
                     <div class="activity-stat-card walking">
-                        <h4>🚶 Walking</h4>
+                        <h4>Walking</h4>
                         <div class="activity-stat-row">
                             <span class="activity-stat-label">Walks</span>
                             <span class="activity-stat-value">${activityStats.walking.count}</span>
@@ -1126,7 +1232,7 @@
                         </div>
                     </div>
                     <div class="activity-stat-card running">
-                        <h4>🏃 Running</h4>
+                        <h4>Running</h4>
                         <div class="activity-stat-row">
                             <span class="activity-stat-label">Runs</span>
                             <span class="activity-stat-value">${activityStats.running.count}</span>
@@ -1141,7 +1247,7 @@
                         </div>
                     </div>
                     <div class="activity-stat-card stairs">
-                        <h4>𓊍 Stair Climbing</h4>
+                        <h4>Stair Climbing</h4>
                         <div class="activity-stat-row">
                             <span class="activity-stat-label">Activities</span>
                             <span class="activity-stat-value">${activityStats.stairs.count}</span>
@@ -1156,7 +1262,7 @@
                         </div>
                     </div>
                     <div class="activity-stat-card mountaineering">
-                        <h4>⛰️ Mountaineering</h4>
+<h4>Mountaineering</h4>
                         <div class="activity-stat-row">
                             <span class="activity-stat-label">Trips</span>
                             <span class="activity-stat-value">${activityStats.mountaineering.count}</span>
@@ -1175,7 +1281,7 @@
                         </div>
                     </div>
                     <div class="activity-stat-card strength">
-                        <h4>💪 Strength Training</h4>
+                        <h4>Strength Training</h4>
                         <div class="activity-stat-row">
                             <span class="activity-stat-label">Workouts</span>
                             <span class="activity-stat-value">${activityStats.strength.count}</span>
@@ -1325,7 +1431,7 @@
                 }, 100);
 
                 document.getElementById('lastUpdated').textContent = 
-                    `Last updated: ${new Date().toLocaleTimeString()} • ${state.activities.length} activities in ${year}`;
+                    `#paytheman | Last updated: ${new Date().toLocaleTimeString()} • ${state.activities.length} activities in ${year}`;
 
             } catch (error) {
                 console.error('Error loading dashboard:', error);
