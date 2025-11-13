@@ -258,7 +258,7 @@
 
         .activity-stat-card.walking {
             border-top-color: var(--walking);
-            background-image: url('walking.png');
+            background-image: url('walking-man-icon-transparent.png');
             background-size: 100px;
             background-position: center;
             background-repeat: no-repeat;
@@ -437,6 +437,7 @@
             padding: 1.5rem;
             border-radius: 0;
             box-shadow: var(--shadow-lg);
+            overflow-x: auto;
         }
 
         .activities-header {
@@ -509,6 +510,34 @@
         .activity-badge.scrambling { background: #d1fae5; color: var(--hiking); }
         .activity-badge.climbing { background: #d1fae5; color: var(--hiking); }
         .activity-badge.stairs { background: #ede9fe; color: var(--stairs); }
+
+        /* Annual Statistics Table Styling */
+        .annual-stats-table thead th {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .annual-stats-table .subheader-row th {
+            background: var(--bg-secondary);
+            font-weight: 700;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .annual-stats-table .subheader-row:first-child th[colspan] {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 0.875rem;
+        }
+
+        .annual-stats-table tbody td {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .annual-stats-table tbody td:first-child {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
 
         .loading {
             text-align: center;
@@ -665,6 +694,13 @@
             </div>
             <div id="activitiesTable">
                 <div class="loading">Loading activities</div>
+            </div>
+        </div>
+
+        <h2 class="section-header" style="margin-top: 3rem;">Annual Statistics</h2>
+        <div class="activities-section">
+            <div id="annualStatsTable">
+                <div class="loading">Loading annual statistics</div>
             </div>
         </div>
 
@@ -892,6 +928,89 @@
                 } catch (error) {
                     console.error('Error fetching total miles and elevation from Stats tab:', error);
                     return { totalMiles: 0, totalElevation: 0 };
+                }
+            }
+
+            static async getAnnualStatistics() {
+                try {
+                    const statsData = await this.fetchSheetRaw(CONFIG.SHEETS.STATS);
+                    const annualStats = [];
+                    
+                    // Row 3 is the header (index 2), so data starts at index 3
+                    // Only look at rows 1-25 (indices 3-24 for data rows)
+                    const maxRow = Math.min(25, statsData.length);
+                    for (let i = 3; i < maxRow; i++) {
+                        const row = statsData[i];
+                        const dateValue = row[0]; // Column A - Date
+                        
+                        if (dateValue) {
+                            const date = this.parseDate(dateValue);
+                            if (date) {
+                                const year = date.getFullYear();
+                                const activeDays = row[1] || 0;              // Column B
+                                const activePercent = row[2] || 0;           // Column C
+                                const volume = row[3] || 0;                  // Column D
+                                const averageWeight = row[4] || 0;           // Column E
+                                const runningDays = row[5] || 0;             // Column F
+                                const runningMiles = row[6] || 0;            // Column G
+                                const runningVert = row[8] || 0;             // Column I
+                                const stairsDays = row[9] || 0;              // Column J
+                                const stairsSteps = row[10] || 0;            // Column K
+                                const stairsVert = row[11] || 0;             // Column L
+                                const walkingDays = row[12] || 0;            // Column M
+                                const walkingMiles = row[13] || 0;           // Column N
+                                const walkingVert = row[14] || 0;            // Column O
+                                const mountainsTrips = row[15] || 0;         // Column P
+                                const mountainsPeaks = row[16] || 0;         // Column Q
+                                const mountainsMiles = row[17] || 0;         // Column R
+                                const mountainsVert = row[18] || 0;          // Column S
+                                const strengthWorkouts = row[19] || 0;       // Column T
+                                const totalMiles = row[20] || 0;             // Column U
+                                const totalVert = row[21] || 0;              // Column V
+                                
+                                // Check if all numeric values are zero
+                                const allZeros = activeDays === 0 && volume === 0 && 
+                                    runningDays === 0 && runningMiles === 0 && runningVert === 0 &&
+                                    stairsDays === 0 && stairsSteps === 0 && stairsVert === 0 &&
+                                    walkingDays === 0 && walkingMiles === 0 && walkingVert === 0 &&
+                                    mountainsTrips === 0 && mountainsPeaks === 0 && mountainsMiles === 0 && mountainsVert === 0 &&
+                                    strengthWorkouts === 0 && totalMiles === 0 && totalVert === 0;
+                                
+                                // Skip rows where all values are zero
+                                if (!allZeros) {
+                                    annualStats.push({
+                                        year: year,
+                                        activeDays: activeDays,
+                                        activePercent: activePercent,
+                                        volume: volume,
+                                        averageWeight: averageWeight,
+                                        runningDays: runningDays,
+                                        runningMiles: runningMiles,
+                                        runningVert: runningVert,
+                                        stairsDays: stairsDays,
+                                        stairsSteps: stairsSteps,
+                                        stairsVert: stairsVert,
+                                        walkingDays: walkingDays,
+                                        walkingMiles: walkingMiles,
+                                        walkingVert: walkingVert,
+                                        mountainsTrips: mountainsTrips,
+                                        mountainsPeaks: mountainsPeaks,
+                                        mountainsMiles: mountainsMiles,
+                                        mountainsVert: mountainsVert,
+                                        strengthWorkouts: strengthWorkouts,
+                                        totalMiles: totalMiles,
+                                        totalVert: totalVert
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Sort by year descending (most recent first)
+                    return annualStats.sort((a, b) => b.year - a.year);
+                } catch (error) {
+                    console.error('Error fetching annual statistics from Stats tab:', error);
+                    return [];
                 }
             }
         }
@@ -1349,6 +1468,90 @@
                     </table>
                 `;
             }
+
+            static renderAnnualStatistics(annualStats) {
+                if (annualStats.length === 0) {
+                    document.getElementById('annualStatsTable').innerHTML = '<div class="empty-state"><div>📊</div><p>No annual statistics found</p></div>';
+                    return;
+                }
+
+                // Helper function to format numbers with max 2 decimal places
+                const formatNumber = (num) => {
+                    if (typeof num !== 'number') return num;
+                    // Remove trailing zeros and unnecessary decimal point
+                    return parseFloat(num.toFixed(2));
+                };
+
+                document.getElementById('annualStatsTable').innerHTML = `
+                    <table class="activities-table annual-stats-table">
+                        <thead>
+                            <tr class="subheader-row">
+                                <th rowspan="2">Year</th>
+                                <th rowspan="2">Active Days</th>
+                                <th rowspan="2">Active %</th>
+                                <th rowspan="2">Volume</th>
+                                <th rowspan="2">Avg Weight</th>
+                                <th colspan="3">Running</th>
+                                <th colspan="3">Stair Climbing</th>
+                                <th colspan="3">Walking</th>
+                                <th colspan="4">Mountaineering</th>
+                                <th colspan="1">Strength</th>
+                                <th rowspan="2">Total Miles</th>
+                                <th rowspan="2">Total Vert</th>
+                            </tr>
+                            <tr class="subheader-row">
+                                <th>Days</th>
+                                <th>Miles</th>
+                                <th>Vert</th>
+                                <th>Days</th>
+                                <th>Steps</th>
+                                <th>Vert</th>
+                                <th>Days</th>
+                                <th>Miles</th>
+                                <th>Vert</th>
+                                <th>Trips</th>
+                                <th>Peaks</th>
+                                <th>Miles</th>
+                                <th>Vert</th>
+                                <th>Workouts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${annualStats.map(stat => {
+                                const activePercentFormatted = typeof stat.activePercent === 'number' 
+                                    ? (stat.activePercent * 100).toFixed(1) + '%' 
+                                    : stat.activePercent;
+                                
+                                return `
+                                    <tr>
+                                        <td data-label="Year">${stat.year}</td>
+                                        <td data-label="Active Days">${formatNumber(stat.activeDays)}</td>
+                                        <td data-label="Active %">${activePercentFormatted}</td>
+                                        <td data-label="Volume">${formatNumber(stat.volume)}</td>
+                                        <td data-label="Avg Weight">${formatNumber(stat.averageWeight)}</td>
+                                        <td data-label="Running Days">${formatNumber(stat.runningDays)}</td>
+                                        <td data-label="Running Miles">${formatNumber(stat.runningMiles)}</td>
+                                        <td data-label="Running Vert">${formatNumber(stat.runningVert).toLocaleString()}</td>
+                                        <td data-label="Stairs Days">${formatNumber(stat.stairsDays)}</td>
+                                        <td data-label="Stairs Steps">${formatNumber(stat.stairsSteps).toLocaleString()}</td>
+                                        <td data-label="Stairs Vert">${formatNumber(stat.stairsVert).toLocaleString()}</td>
+                                        <td data-label="Walking Days">${formatNumber(stat.walkingDays)}</td>
+                                        <td data-label="Walking Miles">${formatNumber(stat.walkingMiles)}</td>
+                                        <td data-label="Walking Vert">${formatNumber(stat.walkingVert).toLocaleString()}</td>
+                                        <td data-label="Mountaineering Trips">${formatNumber(stat.mountainsTrips)}</td>
+                                        <td data-label="Mountaineering Peaks">${formatNumber(stat.mountainsPeaks)}</td>
+                                        <td data-label="Mountaineering Miles">${formatNumber(stat.mountainsMiles)}</td>
+                                        <td data-label="Mountaineering Vert">${formatNumber(stat.mountainsVert).toLocaleString()}</td>
+                                        <td data-label="Strength Workouts">${formatNumber(stat.strengthWorkouts)}</td>
+                                        <td data-label="Total Miles">${formatNumber(stat.totalMiles)}</td>
+                                        <td data-label="Total Vert">${formatNumber(stat.totalVert).toLocaleString()}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
         }
 
         class ChartManager {
@@ -1444,6 +1647,10 @@
                 UIRenderer.renderStats(stats, totalMilesAndElevation);
                 UIRenderer.renderActivityStats(activityStats, peaksFromStats);
                 UIRenderer.renderActivities(state.activities);
+                
+                // Fetch and render annual statistics
+                const annualStats = await DataService.getAnnualStatistics();
+                UIRenderer.renderAnnualStatistics(annualStats);
                 
                 setTimeout(() => {
                     ChartManager.createActivityPieChart(breakdown);
